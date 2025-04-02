@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.test.exam.mapper.QuestionMapper">
+    <insert id="insertQuestion">
+        INSERT INTO questions (question_text, option_a, option_b, option_c, option_d, answer)
+        VALUES (#{questionText}, #{optionA}, #{optionB}, #{optionC}, #{optionD}, #{answer})
+    </insert>
+</mapper>
