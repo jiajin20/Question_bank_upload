@@ -3,8 +3,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.test.exam.mapper.QuestionMapper">
-    <insert id="insertQuestion">
-        INSERT INTO questions (question_text, option_a, option_b, option_c, option_d, answer)
-        VALUES (#{questionText}, #{optionA}, #{optionB}, #{optionC}, #{optionD}, #{answer})
+    <insert id="insertQuestion" parameterType="com.test.exam.entity.Question">
+        INSERT INTO questions (question_text, question_type, option_a, option_b, option_c, option_d, answer, analysis)
+        VALUES (#{questionText}, #{questionType}, #{optionA}, #{optionB}, #{optionC}, #{optionD}, #{answer}, #{analysis});
     </insert>
+
 </mapper>

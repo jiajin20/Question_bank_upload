@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.test.exam_test.demos.web;
+package com.test.exam.demos.web;
 
 /**
  * @author <a href="mailto:chenxilzx1@gmail.com">theonefx</a>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.test.exam_test.demos.web;
+package com.test.exam.demos.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -54,7 +54,7 @@ public class BasicController {
 
     // http://127.0.0.1:8080/html
     @RequestMapping("/html")
-    public String html(){
+    public String html() {
         return "index.html";
     }
 

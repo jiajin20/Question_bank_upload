@@ -1,6 +1,39 @@
-<html>
-    <body>
-        <h1>hello word!!!</h1>
-        <p>this is a html page</p>
-    </body>
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>试卷上传</title>
+</head>
+<body>
+<h2>上传试卷文件（.docx）</h2>
+<input type="file" id="fileInput">
+<button onclick="uploadFile()">上传</button>
+<p id="message"></p>
+
+<script>
+    function uploadFile() {
+        let fileInput = document.getElementById("fileInput");
+        let file = fileInput.files[0];
+        if (!file) {
+            document.getElementById("message").innerText = "请选择文件";
+            return;
+        }
+
+        let formData = new FormData();
+        formData.append("file", file);
+
+        fetch("http://localhost:8080/uploadQuestions", {
+            method: "POST",
+            body: formData
+        })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("message").innerText = data;
+            })
+            .catch(error => {
+                document.getElementById("message").innerText = "上传失败：" + error;
+            });
+    }
+</script>
+</body>
 </html>
