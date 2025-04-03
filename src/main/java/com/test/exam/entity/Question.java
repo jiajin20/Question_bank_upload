@@ -11,6 +11,7 @@ public class Question {
     private String optionD;
     private String answer;
     private String analysis;
+    private String fileName;
 
     // Getters and Setters
 
@@ -20,6 +21,14 @@ public class Question {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public String getAnalysis() {

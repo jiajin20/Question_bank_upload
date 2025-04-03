@@ -12,6 +12,7 @@ public class FileParser {
     public static List<Question> parseDocx(MultipartFile file) throws Exception {
         XWPFDocument document = new XWPFDocument(file.getInputStream());
         List<Question> questions = new ArrayList<>();
+        String fileName = file.getOriginalFilename(); // 获取文件名
         Pattern questionPattern = Pattern.compile("(\\d+\\.\\s*)(.*?)\\s*A\\)"); // 匹配问题文本
         Pattern optionPattern = Pattern.compile("([A-D])\\)\\s*(.*?)\\s*(?=(?:[A-D]\\)|$))"); // 匹配选项 A) B) C) D)
 
@@ -52,8 +53,7 @@ public class FileParser {
 
                 // 设置答案（假设答案为 A，后续可以根据需求调整）
                 question.setAnswer("A");
-
-                questions.add(question);
+                question.setFileName(fileName); // 设置文件名                questions.add(question);
             }
         }
         return questions;

@@ -21,6 +21,12 @@ public class QuestionService {
     private QuestionMapper questionMapper;
 
     public void parseAndSaveQuestions(MultipartFile file) throws IOException {
+        // 获取文件名并去掉 .docx 后缀
+        String fileName = file.getOriginalFilename();
+        if (fileName != null) {
+            fileName = fileName.replaceAll("\\.(docx|doc)$", "");  // 去除 .docx 或 .doc 后缀
+        }
+
         XWPFDocument document = new XWPFDocument(file.getInputStream());
         List<QuestionModel> modelQuestions = new ArrayList<>();
         List<XWPFParagraph> paragraphs = document.getParagraphs();
@@ -34,31 +40,23 @@ public class QuestionService {
                 continue;
             }
 
-            // 调试输出解析的段落内容
-            System.out.println("解析段落内容: " + text);
-
             // 判断题目类别，匹配更灵活
             if (text.contains("选择题")) {  // 匹配“选择题”
                 currentCategory = "single_choice";
-                System.out.println("题目类别: 选择题");
-                continue;  // 跳过当前行，继续处理下一个段落
+                continue;
             } else if (text.contains("多选题")) {  // 匹配“多选题”
                 currentCategory = "multiple_choice";
-                System.out.println("题目类别: 多选题");
                 continue;
             } else if (text.contains("判断题")) {  // 匹配“判断题”
                 currentCategory = "true_false";
-                System.out.println("题目类别: 判断题");
                 continue;
             } else if (text.contains("问答题")) {  // 匹配“问答题”
                 currentCategory = "short_answer";
-                System.out.println("题目类别: 问答题");
                 continue;
             }
 
             // 确保 currentCategory 不为 null
             if (currentCategory == null) {
-                System.out.println("警告：没有设置题目类别，跳过解析！");
                 continue;  // 跳过当前行
             }
 
@@ -66,7 +64,6 @@ public class QuestionService {
             if (text.matches("^[0-9]+\\..*")) {  // 题目
                 if (currentModelQuestion != null) {
                     modelQuestions.add(currentModelQuestion);
-                    System.out.println("添加题目到 modelQuestions: " + currentModelQuestion.getQuestionText());
                 }
                 currentModelQuestion = new QuestionModel();
                 currentModelQuestion.setOptions(new ArrayList<>());
@@ -75,24 +72,20 @@ public class QuestionService {
             } else if (text.matches("^[A-D]\\..*")) {  // 选项
                 if (currentModelQuestion != null) {
                     currentModelQuestion.getOptions().add(text);
-                    System.out.println("添加选项: " + text);
                 }
             } else if (text.startsWith("答案：")) {  // 解析答案
                 if (currentModelQuestion != null) {
                     String answer = text.replace("答案：", "").trim();
                     if (currentModelQuestion.getQuestionType().equals("multiple_choice")) {
-                        // 对多选题的答案进行处理，例如将 "A.B.C.D." 转换为数组
                         currentModelQuestion.setAnswer(answer.replace(".", "").replace(" ", ""));
                     } else {
                         currentModelQuestion.setAnswer(answer);
                     }
-                    System.out.println("设置答案: " + answer);
                 }
             } else if (text.startsWith("解析：")) {  // 解析
                 if (currentModelQuestion != null) {
                     currentModelQuestion.setAnalysis(text.replace("解析：", "").trim());
                     modelQuestions.add(currentModelQuestion);
-                    System.out.println("设置解析: " + currentModelQuestion.getAnalysis());
                     currentModelQuestion = null;
                 }
             }
@@ -103,23 +96,15 @@ public class QuestionService {
             modelQuestions.add(currentModelQuestion);
         }
 
-        // 打印 modelQuestions 确认数据
-        if (modelQuestions.isEmpty()) {
-            System.out.println("警告：没有解析到任何题目！");
-        } else {
-            System.out.println("解析到的题目数量：" + modelQuestions.size());
-        }
-
         // 插入数据库前的检查
         for (QuestionModel modelQuestion : modelQuestions) {
             if (modelQuestion.getQuestionType() == null || modelQuestion.getQuestionType().isEmpty()) {
-                System.out.println("错误：题目类型不能为空，跳过存储！题目：" + modelQuestion.getQuestionText());
                 continue;  // 跳过这个问题
             }
 
             Question entityQuestion = QuestionConverter.convertToEntity(modelQuestion);
-            System.out.println("准备插入数据库的题目：" + entityQuestion.getQuestionText());
-            questionMapper.insertQuestion(entityQuestion);
+            entityQuestion.setFileName(fileName);  // 设置文件名
+            questionMapper.insertQuestion(entityQuestion);  // 将题目插入数据库
         }
     }
 

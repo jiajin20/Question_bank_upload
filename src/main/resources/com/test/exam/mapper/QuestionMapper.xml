@@ -4,8 +4,9 @@
 
 <mapper namespace="com.test.exam.mapper.QuestionMapper">
     <insert id="insertQuestion" parameterType="com.test.exam.entity.Question">
-        INSERT INTO questions (question_text, question_type, option_a, option_b, option_c, option_d, answer, analysis)
-        VALUES (#{questionText}, #{questionType}, #{optionA}, #{optionB}, #{optionC}, #{optionD}, #{answer}, #{analysis});
+        INSERT INTO questions (question_text, question_type, option_a, option_b, option_c, option_d, answer, analysis, file_name)
+        VALUES (#{questionText}, #{questionType}, #{optionA}, #{optionB}, #{optionC}, #{optionD}, #{answer}, #{analysis}, #{fileName});
     </insert>
+
 
 </mapper>

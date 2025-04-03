@@ -13,6 +13,7 @@ public class QuestionConverter {
         entity.setQuestionText(model.getQuestionText());
         entity.setQuestionType(model.getQuestionType()); // 题目类型
 
+
         // 只有单选、多选才需要选项
         if ("single_choice".equals(model.getQuestionType()) || "multiple_choice".equals(model.getQuestionType())) {
             List<String> options = model.getOptions();
